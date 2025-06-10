@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5200" : "";
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5200" : "https://chewata-backend.onrender.com";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
