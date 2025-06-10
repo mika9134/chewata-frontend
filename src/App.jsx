@@ -19,13 +19,13 @@ const App = () => {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore()
   const { theme } = useThemeStore();
 
-  console.log({ onlineUsers })
+  // console.log({ onlineUsers })
 
   useEffect(() => {
     checkAuth()
   }, [checkAuth]);
 
-  console.log({ authUser })
+  // console.log({ authUser })
 
   if (isCheckingAuth && !authUser) {
     return (
@@ -41,7 +41,7 @@ const App = () => {
   };
 
   return (
-    <div data-theme={theme} className={`bg-base-100 relative ${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "overflow-hidden h-screen" : ""}`}>
+    <div data-theme={theme} className={`bg-base-200 relative ${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "overflow-hidden h-screen" : ""}`}>
       <Navbar />
       <Routes>
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to={"/login"} />} />
@@ -51,15 +51,19 @@ const App = () => {
         <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to={"/login"} />} />
       </Routes>
 
-      {isAuthPage() ? (
+      <div className={`absolute bottom-0 left-0 w-full text-center bg-base-200 flex items-center justify-center ${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "sticky" : "sticky"}`}>
+        <Footer />
+      </div>
+
+      {/* {isAuthPage() ? (
         <div className={`absolute bottom-0 left-0 w-full h-16 bg-base-200 flex items-center justify-center ${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "block" : "hidden"}`}>
           <Footer />
         </div>
       ) : (
-        <div className={`relative ${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "hidden" : "block"}}`}>
+        <div className={`${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "hidden" : "block"}}`}>
           <Footer />
         </div>
-      )}
+      )} */}
 
       <Toaster
         position="top-center"
