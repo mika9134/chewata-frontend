@@ -30,8 +30,8 @@ const LoginPage = () => {
   }
 
   return (
-    <div className='my-auto flex justify-center overflow-hidden max-lg:px-4 pt-[5%]'>
-      <div className='bg-form p-8 rounded-lg shadow-md w-full max-w-md overflow-hidden max-lg:px-6 bg-info/25'>
+    <div className='my-auto flex justify-center overflow-hidden overflow-y-hidden max-lg:px-4 pt-[5%] h-[87svh]'>
+      <div className='bg-form p-8 rounded-lg shadow-md w-full max-w-md overflow-hidden max-lg:px-6 bg-info/25 h-2/3'>
         <h2 className='text-2xl font-bold text-center mb-2'>Login</h2>
         <p className='mb-10  text-center'>Welcome back, esteemed user.</p>
         <form onSubmit={handleSubmit}>
