@@ -1,12 +1,50 @@
-# React + Vite
+# Chewata Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project serves as the frontend for Chewata Chat, a real-time chatting application built with React and Vite. It offers a responsive interface for authentication, messaging, theme customization, and profile management.
 
-Currently, two official plugins are available:
+## Features
+- **Responsive Design:** Built with React, Tailwind CSS, and DaisyUI.
+- **Real-Time Interaction:** Integrated with Socket.IO via the backend for live chat.
+- **Fast Development:** Leverages Vite for hot module replacement and speedy builds.
+- **State Management:** Uses Zustand for efficient state management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Prerequisites
+- Node.js (v16+)
+- npm or yarn package manager
 
-## Expanding the ESLint configuration
+## Installation
+1. Clone the repository.
+2. Navigate to the `chewata-frontend` directory:
+    ```sh
+    cd chewata-frontend
+    ```
+3. Install dependencies:
+    ```sh
+    npm install
+    ```
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Development
+Start the development server with:
+```sh
+npm run dev
+```
+Open http://localhost:5173 to view the application.
+
+## Production Build & Deployment
+To build the application for production:
+```sh
+npm run build
+```
+
+Preview the production build with
+```sh
+npm run review
+```
+
+# Deployment Tips:
+
+- Deploy the output from the dist folder to your preferred hosting provider.
+- For Vercel, the provided vercel.json ensures correct routing.
+
+## Contact
+For issues or questions, please open an issue in the repository or contact the developer.
