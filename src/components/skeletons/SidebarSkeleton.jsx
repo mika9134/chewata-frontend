@@ -1,33 +1,43 @@
 import { Users } from "lucide-react";
+import Skeleton from "../ui/Skeleton";
 
 const SidebarSkeleton = () => {
-  const skeletonContacts = Array(8).fill(null);
+  const skeletonContacts = Array(6).fill(null);
 
   return (
-    <aside
-      className="h-full w-20 lg:w-72 border-r border-base-300 
-    flex flex-col transition-all duration-200"
-    >
-      <div className="border-b border-base-300 w-full p-5">
-        <div className="flex items-center gap-2">
-          <Users className="w-6 h-6" />
-          <span className="font-medium hidden lg:block">Contacts</span>
+    <aside className="h-full w-full lg:w-72 bg-surface-primary border-r border-border flex flex-col transition-all duration-200">
+      {/* Header */}
+      <div className="p-4 lg:p-5 border-b border-border">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 rounded-lg bg-surface-secondary">
+            <Users className="w-5 h-5 text-text-tertiary" />
+          </div>
+          <Skeleton width="w-24" height="h-5" rounded="rounded-lg" className="hidden lg:block" />
+        </div>
+
+        <Skeleton width="w-full" height="h-10" rounded="rounded-lg" />
+
+        <div className="mt-3 flex items-center gap-2">
+          <Skeleton width="w-20" height="h-4" rounded="rounded" />
+          <Skeleton width="w-8" height="h-4" rounded="rounded" className="ml-auto" />
         </div>
       </div>
 
-      <div className="overflow-y-auto w-full py-3">
-        {skeletonContacts.map((_, idx) => (
-          <div key={idx} className="w-full p-3 flex items-center gap-3">
-            <div className="relative mx-auto lg:mx-0">
-              <div className="skeleton size-12 rounded-full" />
+      {/* Skeleton Items */}
+      <div className="flex-1 overflow-y-auto p-2 lg:p-3">
+        <div className="space-y-1">
+          {skeletonContacts.map((_, idx) => (
+            <div key={idx} className="p-3 rounded-lg border border-border">
+              <div className="flex items-center gap-3">
+                <Skeleton width="w-10 lg:w-12" height="h-10 lg:h-12" rounded="rounded-full" />
+                <div className="hidden lg:flex flex-col flex-1 gap-2">
+                  <Skeleton width="w-32" height="h-4" rounded="rounded-lg" />
+                  <Skeleton width="w-16" height="h-3" rounded="rounded-lg" />
+                </div>
+              </div>
             </div>
-
-            <div className="hidden lg:block text-left min-w-0 flex-1">
-              <div className="skeleton h-4 w-32 mb-2" />
-              <div className="skeleton h-3 w-16" />
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </aside>
   );

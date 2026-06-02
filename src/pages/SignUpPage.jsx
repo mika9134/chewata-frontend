@@ -1,98 +1,185 @@
-import React, { useState } from 'react'
-import { useAuthStore } from '../store/useAuthStore'
-import { Loader2 } from 'lucide-react'
-import toast from 'react-hot-toast'
+import React, { useState } from "react";
+import { useAuthStore } from "../store/useAuthStore";
+import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import Card from "../components/ui/Card";
+import LogoSrc from "../assets/logo/Chewata.svg?react";
 
 const SignUpPage = () => {
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-  })
+    fullName: "",
+    email: "",
+    password: "",
+  });
 
-  const { signup, isSigningUp } = useAuthStore()
+  const { signup, isSigningUp } = useAuthStore();
 
   const validateForm = () => {
-    if(!formData.fullName.trim()) return toast.error('Full Name is required')
-    if(!formData.email.trim()) return toast.error('Email is required')
-    if(!/\S+@\S+\.\S+/.test(formData.email)) return toast.error('Email is invalid')
-    if(!formData.password) return toast.error('Password is required')
-    if(formData.password.length < 6) return toast.error('Password must be at least 6 characters long')
-
-    return true
-  }
+    if (!formData.fullName.trim()) {
+      toast.error("Full name is required");
+      return false;
+    }
+    if (!formData.email.trim()) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      toast.error("Please enter a valid email");
+      return false;
+    }
+    if (!formData.password) {
+      toast.error("Password is required");
+      return false;
+    }
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    const success = validateForm();
-    // console.log(formData)
-
-    if (success === true) signup(formData)
-  }
+    e.preventDefault();
+    if (validateForm()) {
+      signup(formData);
+    }
+  };
 
   return (
-    <div className='flex justify-center overflow-hidden overflow-y-hidden max-lg:px-4 pt-[5%] h-[87svh]'>
-      <div className='bg-form p-8 rounded-lg shadow-md w-full max-w-md overflow-hidden max-lg:px-6 bg-info/25 h-3/4'>
-        <h2 className='text-2xl font-bold text-center mb-2'>Sign Up</h2>
-        <p className='mb-10 text-center'>Get started with your free account</p>
-        <form onSubmit={handleSubmit}>
-          <div className='mb-6 relative'>
-            <label className='absolute border bg-primary text-primary-content left-4 text-sm bottom-8 px-3 block mb-2' htmlFor='fullName'>Full Name</label>
-            <input
-              type='text'
-              id='fullName'
-              name='fullName'
-              value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              className='w-full px-3 py-3 border rounded focus:outline-none focus:ring focus:ring-info'
-            />
-          </div>
-          <div className='mb-6 relative'>
-            <label className='absolute border bg-primary text-primary-content left-4 text-sm bottom-8 px-3 block mb-2' htmlFor='email'>Email</label>
-            <input
-              type='email'
-              id='email'
-              name='email'
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className='w-full px-3 py-3 border rounded focus:outline-none focus:ring focus:ring-info'
-            />
-          </div>
-          <div className='mb-2 relative'>
-            <label className='absolute border bg-primary text-primary-content left-4 text-sm bottom-22 px-3 block mb-2' htmlFor='password'>Password</label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id='password'
-              name='password'
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className='w-full px-3 py-3 border rounded focus:outline-none focus:ring focus:ring-info'
-            />
-
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="mt-8 text-info hover:text-primary">
-              {showPassword ? 'Hide Password' : 'Show Password'}
-            </button>
-          </div>
-
-          <button type="submit" disabled={isSigningUp} className={`w-full bg-primary text-primary-content hover:scale-105 transition-transform duration-300 py-2 rounded ${isSigningUp && 'opacity-50 cursor-not-allowed'}`}>
-            {isSigningUp ? (
-              <div className='flex items-center justify-center'>
-                <Loader2 className='animate-spin mr-2 size-5' />
-                'Signing Up...'
-              </div>
-            ) : (
-              'Create Account'
-            )}
-          </button>
-        </form>
-        <p className='mt-2 text-center'>
-          Already have an account? <a href='/login' className='text-info hover:text-primary'>Login</a>
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-surface-primary to-surface-secondary flex items-center justify-center p-4">
+      {/* Background Decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
       </div>
-    </div>
-  )
-}
 
-export default SignUpPage
+      {/* Sign Up Card */}
+      <Card className="relative z-10 w-full max-w-md shadow-xl" padding="lg">
+        {/* Logo & Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="p-3 rounded-xl bg-primary-light">
+              <LogoSrc className="fill-primary h-8 w-8" />
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">
+            Get Started
+          </h1>
+          <p className="text-text-secondary">Create your Chewata account today</p>
+        </div>
+
+        {/* Sign Up Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Full Name Input */}
+          <div>
+            <label className="block text-sm font-medium text-text-primary mb-2">
+              Full Name
+            </label>
+            <Input
+              type="text"
+              placeholder="John Doe"
+              value={formData.fullName}
+              onChange={(e) =>
+                setFormData({ ...formData, fullName: e.target.value })
+              }
+              disabled={isSigningUp}
+              size="md"
+            />
+          </div>
+
+          {/* Email Input */}
+          <div>
+            <label className="block text-sm font-medium text-text-primary mb-2">
+              Email Address
+            </label>
+            <Input
+              type="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              disabled={isSigningUp}
+              size="md"
+            />
+          </div>
+
+          {/* Password Input */}
+          <div>
+            <label className="block text-sm font-medium text-text-primary mb-2">
+              Password
+            </label>
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              disabled={isSigningUp}
+              rightIcon={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="hover:opacity-70 transition-opacity"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              }
+              size="md"
+            />
+            <p className="text-xs text-text-tertiary mt-1">
+              At least 6 characters
+            </p>
+          </div>
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            isLoading={isSigningUp}
+            disabled={isSigningUp}
+            className="w-full"
+          >
+            {isSigningUp ? "Creating account..." : "Create Account"}
+          </Button>
+        </form>
+
+        {/* Divider */}
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-border"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-surface-secondary text-text-tertiary">
+              Already have an account?
+            </span>
+          </div>
+        </div>
+
+        {/* Login Link */}
+        <Link to="/login" className="block">
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="w-full"
+          >
+            Sign In
+          </Button>
+        </Link>
+      </Card>
+    </div>
+  );
+};
+
+export default SignUpPage;

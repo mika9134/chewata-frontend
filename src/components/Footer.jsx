@@ -1,19 +1,24 @@
-import React from 'react'
+import React from "react";
 
 const Footer = () => {
   return (
-    <div className='w-full'>
-      <footer className=" bg-base-300 text-base-content text-sm p-4">
-        <aside>
-          <p>Copyright © {new Date().getFullYear()} - All Rights Reserved. Developed by <span></span>
-            <a href="https://dagmawi-napoleon.vercel.app/" target='_blank'
-              className='text-info hover:text-primary underline-offset-8 hover:underline hover:decoration-dashed transition-all duration-300'>
-              Dagmawi Napoleon</a>.
-          </p>
-        </aside>
-      </footer>
-    </div>
-  )
-}
+    <footer className="w-full border-t border-border bg-surface-secondary text-text-secondary text-xs lg:text-sm py-3 lg:py-4 px-4 lg:px-6">
+      <div className="max-w-7xl mx-auto">
+        <p className="text-center">
+          <span className="text-text-tertiary">Copyright © {new Date().getFullYear()} Chewata. </span>
+          <span className="text-text-tertiary">Developed by </span>
+          <a
+            href="https://dagmawi.et/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline hover:text-primary transition-all duration-200 font-medium"
+          >
+            Dagmawi Napoleon
+          </a>
+        </p>
+      </div>
+    </footer>
+  );
+};
 
-export default Footer
+export default Footer;

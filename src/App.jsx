@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import HomePage from './pages/HomePage'
 import SignUpPage from './pages/SignUpPage'
@@ -16,54 +16,48 @@ import { Toaster } from 'react-hot-toast'
 import { Loader } from 'lucide-react'
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore()
-  const { theme } = useThemeStore();
-
-  // console.log({ onlineUsers })
+  const { authUser, checkAuth, isCheckingAuth } = useAuthStore()
+  const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
     checkAuth()
   }, [checkAuth]);
 
-  // console.log({ authUser })
+  // Apply theme on mount
+  useEffect(() => {
+    const htmlElement = document.documentElement;
+    if (theme === "dark") {
+      htmlElement.setAttribute("data-theme", "dark");
+    } else {
+      htmlElement.removeAttribute("data-theme");
+    }
+  }, [theme]);
 
   if (isCheckingAuth && !authUser) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader className="animate-spin text-orange-400 size-10" />
+      <div className="flex justify-center items-center h-screen bg-surface-primary">
+        <Loader className="animate-spin text-primary size-10" />
       </div>
     )
   }
 
-  const isAuthPage = () => {
-    const location = useLocation();
-    return location.pathname === '/login' || location.pathname === '/signup';
-  };
+  const isAuthPage = window.location.pathname === '/login' || window.location.pathname === '/signup';
 
   return (
-    <div data-theme={theme} className={`bg-base-200 relative ${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "overflow-hidden h-screen" : ""}`}>
+    <div data-theme={theme} className={`h-screen bg-surface-primary text-text-primary flex flex-col ${isAuthPage ? "h-screen overflow-hidden" : ""}`}>
       <Navbar />
-      <Routes>
-        <Route path="/" element={authUser ? <HomePage /> : <Navigate to={"/login"} />} />
-        <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to={"/"} />} />
-        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to={"/"} />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to={"/login"} />} />
-      </Routes>
+      
+      <main className="flex-1 overflow-y-hidden">
+        <Routes>
+          <Route path="/" element={authUser ? <HomePage /> : <Navigate to={"/login"} />} />
+          <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to={"/"} />} />
+          <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to={"/"} />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to={"/login"} />} />
+        </Routes>
+      </main>
 
-      <div className={`absolute bottom-0 left-0 w-full text-center bg-base-200 flex items-center justify-center ${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "sticky" : "sticky"}`}>
-        <Footer />
-      </div>
-
-      {/* {isAuthPage() ? (
-        <div className={`absolute bottom-0 left-0 w-full h-16 bg-base-200 flex items-center justify-center ${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "block" : "hidden"}`}>
-          <Footer />
-        </div>
-      ) : (
-        <div className={`${window.location.pathname.includes("/login") || window.location.pathname.includes("/signup") ? "hidden" : "block"}}`}>
-          <Footer />
-        </div>
-      )} */}
+      <Footer />
 
       <Toaster
         position="top-center"

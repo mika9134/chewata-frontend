@@ -1,18 +1,12 @@
-import React, { useState } from 'react'
-import { Camera } from 'lucide-react'
-import { useAuthStore } from '../store/useAuthStore'
-// import { useAuthStore } from '../stores/useAuthStore'
-
-const info = {
-  name: 'Carole Steward',
-  position: 'Chief Executive Officer',
-  email: 'carolesteward@gmail.com',
-  phone: '+1 (555) 123-4567',
-  profilePicture: '../../public/avatar.png',
-  bio: 'Carole Steward is a visionary CEO known for her exceptional leadership and strategic acumen. With a wealth of experience in the corporate world, she has a proven track record of driving innovation and achieving remarkable business growth.',
-  createdAt: '2023-10-01T12:00:00Z',
-  memberStatus: 'active',
-}
+import React, { useState } from "react";
+import { Camera, Mail, Calendar, Shield } from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import Avatar from "../components/ui/Avatar";
+import Badge from "../components/ui/Badge";
+import Separator from "../components/ui/Separator";
+import toast from "react-hot-toast";
 
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
@@ -22,126 +16,170 @@ const ProfilePage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
 
+    // Validate file size
+    if (file.size > 4 * 1024 * 1024) {
+      toast.error("Image must be smaller than 4MB");
+      return;
+    }
+
+    const reader = new FileReader();
     reader.readAsDataURL(file);
 
     reader.onload = async () => {
       const base64Image = reader.result;
       setSelectedImg(base64Image);
       await updateProfile({ profilePicture: base64Image });
+      toast.success("Profile picture updated!");
     };
   };
 
-  function formatDate(isoDateString) {
-    if (!isoDateString) {
-      return ""; // Or handle the case where createdAt is null/undefined
-    }
-  
-    const [year, month, day] = isoDateString.split("T")[0].split("-").map(Number);
-    const date = new Date(year, month - 1, day); // Month is 0-indexed
-  
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-  }
+  const formatDate = (isoDateString) => {
+    if (!isoDateString) return "";
+    const date = new Date(isoDateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const memberSinceDate = formatDate(authUser?.createdAt);
 
   return (
-    <div className=''>
-      <div className="w-full px-10 pt-6">
-        <div className="relative mb-12 max-w-2xl mx-auto mt-24">
-          <div className="rounded overflow-hidden shadow-md bg-info/25 border-blue-300">
-            <div className="absolute -mt-20 w-full flex justify-center">
-              <div className="h-32 w-32">
-                <div className='relative flex justify-end items-end p-2'>
-                  <img
-                    src={isUpdatingProfile ? "/avatar.png" : selectedImg || authUser.profilePicture || "/avatar.png"}
-                    className="rounded-full object-center object-contain shadow-md border-2 border-form"
-                    width={240}
-                    height={240} />
-                  <label
-                    htmlFor='avatar-upload'
-                    className={`absolute bottom-3 right-2 bg-orange-400 hover:bg-blue-100 transition-all duration-300 text-black border p-1 rounded-md cursor-pointer ${isUpdatingProfile ? 'animate-pulse pointer-events-none' : ''}`}>
-                    <Camera className='size-5' />
-                    <input type="file" name="avatar-upload" id="avatar-upload"
-                      accept='image/*'
-                      className='hidden cursor-pointer'
-                      onChange={handleImageUpload}
-                      disabled={isUpdatingProfile} />
-                  </label>
-                </div>
-                <p className="text-sm text-success-content absolute bottom-4 right-2 text-center mt-2">
-                  {isUpdatingProfile ? "Uploading..." : "Update Profile Picture"}
-                </p>
+    <div className="min-h-screen bg-surface-primary p-4 lg:p-8">
+      <div className="max-w-2xl mx-auto space-y-6">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl font-bold text-text-primary">Profile</h1>
+          <p className="text-text-secondary mt-1">Manage your account information</p>
+        </div>
+
+        {/* Profile Picture Card */}
+        <Card padding="lg" className="text-center">
+          <div className="space-y-4">
+            <div className="flex justify-center">
+              <div className="relative">
+                <Avatar
+                  src={selectedImg || authUser?.profilePicture}
+                  alt={authUser?.fullName}
+                  size="2xl"
+                  initials={authUser?.fullName.charAt(0)}
+                />
+                <label
+                  htmlFor="avatar-upload"
+                  className="absolute bottom-0 right-0 p-2 rounded-full bg-primary text-white hover:bg-blue-600 transition-all cursor-pointer shadow-lg"
+                  title="Update profile picture"
+                >
+                  <Camera className="h-5 w-5" />
+                  <input
+                    type="file"
+                    id="avatar-upload"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                    disabled={isUpdatingProfile}
+                  />
+                </label>
               </div>
             </div>
-            <div className="px-6 mt-16 mb-6">
-              <h1 className="font-bold text-3xl text-center mb-1">{authUser?.fullName}</h1>
-              <p className="text-sm text-center mb-12">{info.position}</p>
-              <div>
-                <div className='relative'>
-                  <p className='bg-primary text-primary-content text-sm absolute left-6 px-4 border top-[-10px]'>Email</p>
-                </div>
-                <p className="text-justify text-base py-4 font-normal bg-white/5 rounded-sm px-4 mt-4">
+
+            <div>
+              <h2 className="text-2xl font-bold text-text-primary">
+                {authUser?.fullName}
+              </h2>
+              <p className="text-text-secondary text-sm mt-1">
+                {isUpdatingProfile ? "Updating profile..." : "Update your picture to personalize your account"}
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Account Information */}
+        <Card padding="lg">
+          <h3 className="text-lg font-semibold text-text-primary mb-4">
+            Account Information
+          </h3>
+
+          <Separator className="mb-6" />
+
+          <div className="space-y-6">
+            {/* Email */}
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-lg bg-primary-light flex-shrink-0">
+                <Mail className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-text-secondary">
+                  Email Address
+                </p>
+                <p className="text-text-primary font-mono text-sm mt-1 break-all">
                   {authUser?.email}
                 </p>
               </div>
-              <div>
-                <div className='relative'>
-                  <p className='bg-primary text-primary-content text-sm absolute left-6 px-4 border top-[-10px]'>Phone Number</p>
-                </div>
-                <p className="text-justify text-base py-4 font-normal bg-white/5 rounded-sm px-4 mt-4">
-                  {info.phone}
-                </p>
+            </div>
+
+            {/* Member Since */}
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-lg bg-secondary-light flex-shrink-0">
+                <Calendar className="h-5 w-5 text-secondary" />
               </div>
-              <div>
-                <div className='relative'>
-                  <p className='bg-primary text-primary-content text-sm absolute left-6 px-4 border top-[-10px]'>Bio</p>
-                </div>
-                <p className="text-justify text-base py-4 font-normal bg-white/5 rounded-sm px-4 mt-8">
-                  {authUser?.bio}
+              <div className="flex-1">
+                <p className="text-sm font-medium text-text-secondary">
+                  Member Since
                 </p>
+                <p className="text-text-primary mt-1">{memberSinceDate}</p>
+              </div>
+            </div>
+
+            {/* Status */}
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-lg bg-success-light flex-shrink-0">
+                <Shield className="h-5 w-5 text-success" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-text-secondary">
+                  Account Status
+                </p>
+                <div className="mt-1">
+                  <Badge variant="success">Active</Badge>
+                </div>
               </div>
             </div>
           </div>
+        </Card>
 
+        {/* Bio Section */}
+        {authUser?.bio && (
+          <Card padding="lg">
+            <h3 className="text-lg font-semibold text-text-primary mb-3">
+              Bio
+            </h3>
+            <p className="text-text-secondary leading-relaxed">{authUser.bio}</p>
+          </Card>
+        )}
 
-
-          <div className="bg-info/25 overflow-hidden shadow rounded-md mt-8">
-            <div className="px-4 py-5 pb-2 sm:px-6">
-              <h3 className="leading-6 font-medium text-xl">
-                User Profile
-              </h3>
-              <p className='text-sm mt-2'>Some information about your profile.</p>
-            </div>
-            <div className="py-5 sm:p-0">
-              <dl className="sm:divide-y sm:divide-gray-600 px-4">
-                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-normal opacity-80">
-                    Member Since
-                  </dt>
-                  <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
-                    {formatDate(authUser.createdAt)}
-                  </dd>
-                </div>
-                <div className="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-normal opacity-80">
-                    Member Status
-                  </dt>
-                  <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
-                    {info.memberStatus === "active" ? (
-                      <span className='text-green-600 font-semibold'>Active</span>
-                    ) : (
-                      <span className='text-red-600 font-semibold'>Inactive</span>
-                    )}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </div>
+        {/* Account Settings Info */}
+        <Card padding="lg" className="bg-info-light border border-info">
+          <h4 className="font-semibold text-text-primary mb-2">
+            Account Settings
+          </h4>
+          <p className="text-text-secondary text-sm">
+            Need to change your password or other settings? Visit the{" "}
+            <a href="/settings" className="text-primary font-medium hover:underline">
+              Settings
+            </a>{" "}
+            page.
+          </p>
+        </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;
