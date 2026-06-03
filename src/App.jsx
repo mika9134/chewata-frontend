@@ -23,13 +23,15 @@ const App = () => {
     checkAuth()
   }, [checkAuth]);
 
-  // Apply theme on mount
+  // Apply theme on mount and toggle dark class for Tailwind
   useEffect(() => {
     const htmlElement = document.documentElement;
     if (theme === "dark") {
       htmlElement.setAttribute("data-theme", "dark");
+      htmlElement.classList.add("dark");
     } else {
       htmlElement.removeAttribute("data-theme");
+      htmlElement.classList.remove("dark");
     }
   }, [theme]);
 
@@ -57,7 +59,7 @@ const App = () => {
         </Routes>
       </main>
 
-      <Footer />
+      {!isAuthPage && <Footer />}
 
       <Toaster
         position="top-center"

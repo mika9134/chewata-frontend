@@ -158,13 +158,16 @@
 
 // export default LoginPage;
 
+// @type {import('tailwindcss').Config}
 
 import React, { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Eye, EyeOff, Sun, Moon, ArrowRight } from "lucide-react";
-import { toast } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
+
 import LogoSrc from "../assets/logo/Chewata.svg?react";
+import { Link } from "react-router-dom";
+import { useThemeStore } from "../store/useThemeStore";
 
 const CAROUSEL_IMAGES = [
   "https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2076&auto=format&fit=crop",
@@ -176,13 +179,10 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const { login, isLoggingIn } = useAuthStore();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { theme, setTheme } = useThemeStore();
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  useEffect(() => {
-    if (isDarkMode) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-  }, [isDarkMode]);
+  // Theme is managed globally via useThemeStore; no local effect needed.
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -230,7 +230,7 @@ const LoginPage = () => {
               <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-md">
                 <LogoSrc className="fill-white h-6 w-6" />
               </div>
-              AMU
+              chewata
             </div>
             <Link to="/" className="text-sm font-medium flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
               Back to website <ArrowRight className="w-4 h-4" />
@@ -264,8 +264,8 @@ const LoginPage = () => {
         {/* --- RIGHT PANEL: Transparent Purple Form --- */}
         <div className="w-full md:w-[55%] p-8 sm:p-14 lg:p-16 flex flex-col justify-center relative">
           
-          <button onClick={() => setIsDarkMode(!isDarkMode)} className="absolute top-8 right-8 p-2 rounded-full text-purple-800 dark:text-purple-200 hover:bg-white/40 dark:hover:bg-purple-800/40 transition-colors backdrop-blur-md">
-            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="absolute top-8 right-8 p-2 rounded-full text-purple-800 dark:text-purple-200 hover:bg-white/40 dark:hover:bg-purple-800/40 transition-colors backdrop-blur-md">
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
 
           <div className="max-w-md w-full mx-auto">
@@ -349,9 +349,13 @@ const LoginPage = () => {
               </button>
             </div>
             
+            <Toaster position="top-center" reverseOrder={false} />
+
             <p className="text-xs text-purple-800/60 dark:text-purple-400/60 text-center mt-6">
               Demo: test@example.com / password123
             </p>
+            
+            
           </div>
         </div>
       </div>
